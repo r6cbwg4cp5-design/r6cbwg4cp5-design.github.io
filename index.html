@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Malaak 💖</title>
+
+<style>
+
+body{
+
+  margin:0;
+
+  font-family:Arial;
+
+  text-align:center;
+
+  background:linear-gradient(#ff9ecf,#ffcce6);
+
+  overflow:hidden;
+
+}
+
+.step{display:none;}
+
+.active{display:block;}
+
+button{
+
+  padding:12px 25px;
+
+  margin:10px;
+
+  border:none;
+
+  border-radius:30px;
+
+  background:hotpink;
+
+  color:white;
+
+}
+
+#intro{
+
+  position:fixed;
+
+  width:100%;
+
+  height:100%;
+
+  background:pink;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  font-size:30px;
+
+}
+
+/* hearts + X */
+
+.heart,.x{
+
+  position:fixed;
+
+  font-size:22px;
+
+  animation:float 3s linear;
+
+}
+
+@keyframes float{
+
+  to{transform:translateY(-700px);}
+
+}
+
+/* wheel */
+
+#wheel{
+
+  width:250px;
+
+  height:250px;
+
+  border-radius:50%;
+
+  border:6px solid white;
+
+  margin:auto;
+
+  transition:transform 3s ease-out;
+
+  background:conic-gradient(
+
+    #ff6b9d 0 72deg,
+
+    #ff9ecf 72deg 144deg,
+
+    #ff6b9d 144deg 216deg,
+
+    #ff9ecf 216deg 288deg,
+
+    #ff6b9d 288deg 360deg
+
+  );
+
+}
+
+/* scratch */
+
+canvas{
+
+  width:220px;
+
+  height:220px;
+
+  margin:10px;
+
+  border-radius:15px;
+
+}
+
+/* envelope */
+
+#env{
+
+  width:200px;
+
+  height:120px;
+
+  background:#ff6b9d;
+
+  margin:auto;
+
+  display:flex;
+
+  justify-content:center;
+
+  align-items:center;
+
+  cursor:pointer;
+
+}
+
+#letter{
+
+  display:none;
+
+  background:white;
+
+  padding:20px;
+
+  border-radius:10px;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div id="intro" onclick="start()">Tap 💖</div>
+
+<iframe id="yt" width="0" height="0" allow="autoplay"></iframe>
+
+<h1>💖 Malaak 💖</h1>
+
+<!-- سؤال 1 -->
+
+<div id="s1" class="step active">
+
+<p>htfdly za3lana mni?</p>
+
+<button onclick="yes1()">Yes</button>
+
+<button onclick="no1()">No</button>
+
+</div>
+
+<!-- سؤال 2 -->
+
+<div id="s2" class="step">
+
+<p>htnamy ma3aya?</p>
+
+<button onclick="yes2()">Yes</button>
+
+<button onclick="no2()">No</button>
+
+</div>
+
+<!-- اغنية -->
+
+<div id="song" class="step">
+
+<p>3arfa eh o8nya btfkrny beki?</p>
+
+<button onclick="playSong()">Next</button>
+
+<p id="songTitle"></p>
+
+</div>
+
+<!-- wheel -->
+
+<div id="wheelStep" class="step">
+
+<div id="wheel"></div>
+
+<button onclick="spin()">Spin</button>
+
+<p id="res"></p>
+
+<button onclick="next('q1')">Next</button>
+
+</div>
+
+<!-- flow questions + scratch -->
+
+<div id="q1" class="step">
+
+<p>3arfa meen a8la wahda?</p>
+
+<button onclick="next('img1')">Next</button>
+
+</div>
+
+<div id="img1" class="step">
+
+<canvas id="c1"></canvas>
+
+<button id="next1" style="display:none" onclick="next('q2')">Next</button>
+
+</div>
+
+<div id="q2" class="step">
+
+<p>3arfa ana b7b meen?</p>
+
+<button onclick="next('img2')">Next</button>
+
+</div>
+
+<div id="img2" class="step">
+
+<canvas id="c2"></canvas>
+
+<button id="next2" style="display:none" onclick="next('q3')">Next</button>
+
+</div>
+
+<div id="q3" class="step">
+
+<p>3arfa meen a8la haga?</p>
+
+<button onclick="next('img3')">Next</button>
+
+</div>
+
+<div id="img3" class="step">
+
+<canvas id="c3"></canvas>
+
+<button id="next3" style="display:none" onclick="next('envStep')">Next</button>
+
+</div>
+
+<!-- letter -->
+
+<div id="envStep" class="step">
+
+<div id="env" onclick="openLetter()">💌</div>
+
+<div id="letter">You are my everything 💖 — Moustafa</div>
+
+<button onclick="next('final')">Next</button>
+
+</div>
+
+<!-- النهاية -->
+
+<div id="final" class="step">
+
+<p>bt7beny?</p>
+
+<button onclick="endYes()">Yes</button>
+
+<button onclick="endNo()">No</button>
+
+</div>
+
+<script>
+
+function next(id){
+
+document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+
+document.getElementById(id).classList.add("active");
+
+}
+
+function hearts(n=20){
+
+for(let i=0;i<n;i++){
+
+let h=document.createElement("div");
+
+h.className="heart";
+
+h.innerHTML="💖";
+
+h.style.left=Math.random()*100+"vw";
+
+h.style.top="100%";
+
+document.body.appendChild(h);
+
+setTimeout(()=>h.remove(),3000);
+
+}
+
+}
+
+function xs(){
+
+for(let i=0;i<20;i++){
+
+let x=document.createElement("div");
+
+x.className="x";
+
+x.innerHTML="❌";
+
+x.style.left=Math.random()*100+"vw";
+
+x.style.top=Math.random()*100+"vh";
+
+document.body.appendChild(x);
+
+setTimeout(()=>x.remove(),2000);
+
+}
+
+}
+
+/* loops */
+
+function yes1(){ xs(); next("s1"); }
+
+function no1(){ hearts(); next("s2"); }
+
+function yes2(){ hearts(); next("song"); }
+
+function no2(){ xs(); next("s2"); }
+
+/* song */
+
+function playSong(){
+
+let yt=document.getElementById("yt");
+
+yt.src="https://www.youtube.com/embed/CIuagRrEcPw?start=70&autoplay=1";
+
+setTimeout(()=>yt.src="",50000);
+
+document.getElementById("songTitle").innerText="اغنية حبيبتي ملاك💝";
+
+next("wheelStep");
+
+}
+
+/* wheel */
+
+let items=["Beach","Sushi","Cinema","Cook","Hodny"];
+
+let used=[];
+
+let angle=0;
+
+function spin(){
+
+if(used.length===items.length)return;
+
+let r=Math.floor(Math.random()*items.length);
+
+while(used.includes(r)){r=Math.floor(Math.random()*items.length);}
+
+used.push(r);
+
+angle+=360*3+r*72;
+
+document.getElementById("wheel").style.transform="rotate("+angle+"deg)";
+
+setTimeout(()=>{
+
+document.getElementById("res").innerHTML+=used.length+") "+items[r]+"<br>";
+
+},3000);
+
+}
+
+/* scratch */
+
+let imgs=[
+
+"https://i.ibb.co/zVBg37SD/IMG-5229.jpg",
+
+"https://i.ibb.co/GqvMbhX/IMG-5231.jpg",
+
+"https://i.ibb.co/k2m7gVYH/IMG-5230.jpg"
+
+];
+
+["c1","c2","c3"].forEach((id,i)=>{
+
+let c=document.getElementById(id);
+
+let ctx=c.getContext("2d");
+
+let img=new Image();
+
+img.src=imgs[i];
+
+img.onload=()=>ctx.drawImage(img,0,0,220,220);
+
+ctx.fillStyle="gray";
+
+ctx.fillRect(0,0,220,220);
+
+let scratched=0;
+
+function scratch(x,y){
+
+ctx.clearRect(x-15,y-15,30,30);
+
+scratched++;
+
+if(scratched>60){
+
+document.getElementById("next"+(i+1)).style.display="block";
+
+}
+
+}
+
+c.addEventListener("mousemove",(e)=>{
+
+if(e.buttons){scratch(e.offsetX,e.offsetY);}
+
+});
+
+c.addEventListener("touchmove",(e)=>{
+
+let rect=c.getBoundingClientRect();
+
+let t=e.touches[0];
+
+scratch(t.clientX-rect.left,t.clientY-rect.top);
+
+});
+
+});
+
+/* letter */
+
+function openLetter(){
+
+document.getElementById("letter").style.display="block";
+
+hearts(30);
+
+}
+
+/* النهاية */
+
+function endYes(){
+
+hearts(50);
+
+alert("💖 THE END 💖");
+
+}
+
+function endNo(){
+
+xs();
+
+next("final");
+
+}
+
+function start(){
+
+document.getElementById("intro").style.display="none";
+
+}
+
+</script>
+
+</body>
+
+</html>
