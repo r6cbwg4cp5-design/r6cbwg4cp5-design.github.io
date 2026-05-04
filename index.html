@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malaak 💖</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:linear-gradient(#ff9ecf,#ffcce6);
+}
+
+/* CENTER */
+#app{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  padding:20px;
+}
+
+/* BOX */
+.step{
+  display:none;
+  width:100%;
+  max-width:340px;
+  margin:auto;
+  text-align:center;
+  background:rgba(255,255,255,0.2);
+  padding:20px;
+  border-radius:20px;
+}
+
+.active{display:block;}
+
+button{
+  padding:12px 25px;
+  margin:10px;
+  border:none;
+  border-radius:30px;
+  background:hotpink;
+  color:white;
+}
+
+/* intro */
+#intro{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:pink;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  z-index:1000;
+}
+
+/* hearts + X */
+.heart,.x{
+  position:fixed;
+  font-size:22px;
+  animation:float 3s linear;
+}
+@keyframes float{
+  to{transform:translateY(-700px);}
+}
+
+/* wheel */
+#wheel{
+  width:220px;
+  height:220px;
+  border-radius:50%;
+  border:6px solid white;
+  margin:auto;
+  transition:transform 3s ease-out;
+  background:conic-gradient(
+    #ff6b9d 0 72deg,
+    #ff9ecf 72deg 144deg,
+    #ff6b9d 144deg 216deg,
+    #ff9ecf 216deg 288deg,
+    #ff6b9d 288deg 360deg
+  );
+}
+
+/* scratch */
+canvas{
+  width:200px;
+  height:200px;
+  border-radius:15px;
+  touch-action:none;
+}
+
+/* envelope */
+#env{
+  width:180px;
+  height:110px;
+  background:#ff6b9d;
+  margin:auto;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+}
+#letter{
+  display:none;
+  background:white;
+  padding:15px;
+  border-radius:10px;
+  margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro" onclick="start()">Tap 💖</div>
+
+<!-- 🎧 SONG (READY) -->
+<audio id="music">
+  <source src="https://files.catbox.moe/ldmxbg.mp3" type="audio/mpeg">
+</audio>
+
+<div id="app">
+
+<div id="s1" class="step active">
+<h2>💖 Malaak 💖</h2>
+<p>htfdly za3lana mni?</p>
+<button onclick="yes1()">Yes</button>
+<button onclick="no1()">No</button>
+</div>
+
+<div id="s2" class="step">
+<p>htnamy ma3aya?</p>
+<button onclick="yes2()">Yes</button>
+<button onclick="no2()">No</button>
+</div>
+
+<div id="song" class="step">
+<p>3arfa eh o8nya btfkrny beki?</p>
+<button onclick="playSong()">Next</button>
+<p id="songTitle"></p>
+</div>
+
+<div id="wheelStep" class="step">
+<div id="wheel"></div>
+<button onclick="spin()">Spin</button>
+<p id="res"></p>
+<button onclick="next('q1')">Next</button>
+</div>
+
+<div id="q1" class="step">
+<p>3arfa meen a8la wahda?</p>
+<button onclick="next('img1')">Next</button>
+</div>
+
+<div id="img1" class="step">
+<canvas id="c1" width="200" height="200"></canvas>
+<button id="next1" style="display:none" onclick="next('q2')">Next</button>
+</div>
+
+<div id="q2" class="step">
+<p>3arfa ana b7b meen?</p>
+<button onclick="next('img2')">Next</button>
+</div>
+
+<div id="img2" class="step">
+<canvas id="c2" width="200" height="200"></canvas>
+<button id="next2" style="display:none" onclick="next('q3')">Next</button>
+</div>
+
+<div id="q3" class="step">
+<p>3arfa meen a8la haga?</p>
+<button onclick="next('img3')">Next</button>
+</div>
+
+<div id="img3" class="step">
+<canvas id="c3" width="200" height="200"></canvas>
+<button id="next3" style="display:none" onclick="next('envStep')">Next</button>
+</div>
+
+<div id="envStep" class="step">
+<div id="env" onclick="openLetter()">💌</div>
+<div id="letter">You are my everything 💖</div>
+<button onclick="next('final')">Next</button>
+</div>
+
+<div id="final" class="step">
+<p>bt7beny?</p>
+<button onclick="endYes()">Yes</button>
+<button onclick="endNo()">No</button>
+</div>
+
+</div>
+
+<script>
+
+function next(id){
+document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function yes1(){ next("s1"); }
+function no1(){ next("s2"); }
+
+function yes2(){ next("song"); }
+function no2(){ next("s2"); }
+
+/* 🎧 SONG */
+function playSong(){
+let m=document.getElementById("music");
+m.currentTime=71;
+m.play();
+document.getElementById("songTitle").innerText="اغنية حبيبتي ملاك💝";
+next("wheelStep");
+}
+
+/* wheel */
+let items=["Beach","Sushi","Cinema","Cook","Hodny"];
+let angle=0;
+
+function spin(){
+let r=Math.floor(Math.random()*items.length);
+angle+=360*3+r*72;
+document.getElementById("wheel").style.transform="rotate("+angle+"deg)";
+}
+
+/* scratch */
+let imgs=[
+"https://i.ibb.co/zVBg37SD/IMG-5229.jpg",
+"https://i.ibb.co/GqvMbhX/IMG-5231.jpg",
+"https://i.ibb.co/k2m7gVYH/IMG-5230.jpg"
+];
+
+["c1","c2","c3"].forEach((id,i)=>{
+let c=document.getElementById(id);
+let ctx=c.getContext("2d");
+
+let img=new Image();
+img.src=imgs[i];
+img.onload=()=>ctx.drawImage(img,0,0,200,200);
+
+ctx.fillStyle="gray";
+ctx.fillRect(0,0,200,200);
+
+let scratched=0;
+
+function scratch(x,y){
+ctx.clearRect(x-10,y-10,20,20);
+scratched++;
+if(scratched>40){
+document.getElementById("next"+(i+1)).style.display="block";
+}
+}
+
+c.addEventListener("mousemove",(e)=>{
+if(e.buttons){scratch(e.offsetX,e.offsetY);}
+});
+
+c.addEventListener("touchmove",(e)=>{
+e.preventDefault();
+let rect=c.getBoundingClientRect();
+let t=e.touches[0];
+scratch(t.clientX-rect.left,t.clientY-rect.top);
+});
+});
+
+function openLetter(){
+document.getElementById("letter").style.display="block";
+}
+
+function endYes(){
+alert("💖 THE END 💖");
+}
+
+function endNo(){
+next("final");
+}
+
+function start(){
+document.getElementById("intro").style.display="none";
+}
+
+</script>
+
+</body>
+</html>
