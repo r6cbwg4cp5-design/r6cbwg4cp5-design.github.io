@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Malaak 💖</title>
+
+<style>
+body{
+  margin:0;
+  font-family:Arial;
+  background:linear-gradient(#ff9ecf,#ffcce6);
+}
+
+#app{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+  text-align:center;
+}
+
+.step{display:none;}
+.active{display:block;}
+
+button{
+  padding:12px 25px;
+  margin:10px;
+  border:none;
+  border-radius:30px;
+  background:hotpink;
+  color:white;
+  font-size:16px;
+}
+
+#intro{
+  position:fixed;
+  width:100%;
+  height:100%;
+  background:pink;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  font-size:30px;
+  z-index:1000;
+}
+
+.heart,.x{
+  position:fixed;
+  font-size:24px;
+  animation:float 2.5s linear;
+}
+@keyframes float{
+  to{transform:translateY(-700px);}
+}
+
+#wheel{
+  width:230px;
+  height:230px;
+  border-radius:50%;
+  border:6px solid white;
+  margin:auto;
+  transition:transform 3s ease-out;
+  background:conic-gradient(
+    #ff6b9d 0 72deg,
+    #ff9ecf 72deg 144deg,
+    #ff6b9d 144deg 216deg,
+    #ff9ecf 216deg 288deg,
+    #ff6b9d 288deg 360deg
+  );
+}
+
+img{
+  width:230px;
+  border-radius:15px;
+  margin:10px 0;
+}
+</style>
+</head>
+
+<body>
+
+<div id="intro" onclick="start()">Tap 💖</div>
+
+<audio id="music">
+  <source src="https://files.catbox.moe/ldmxbg.mp3" type="audio/mpeg">
+</audio>
+
+<div id="app">
+
+<!-- s1 -->
+<div id="s1" class="step active">
+<h1>💖 Malaak 💖</h1>
+<p>htfdly za3lana mni?</p>
+<button onclick="s1_yes()">Yes</button>
+<button onclick="s1_no()">No</button>
+</div>
+
+<!-- s2 -->
+<div id="s2" class="step">
+<p>htnamy ma3aya?</p>
+<button onclick="s2_yes()">Yes</button>
+<button onclick="s2_no()">No</button>
+</div>
+
+<!-- song -->
+<div id="song" class="step">
+<p>3arfa eh o8nya btfkrny beki?</p>
+<button onclick="playSong()">Next</button>
+</div>
+
+<!-- wheel -->
+<div id="wheelStep" class="step">
+<p>Dosy w nashof hnro7 fen lama tegy Egypt? 🧐</p>
+<div id="wheel"></div>
+<button onclick="spin()">Spin</button>
+<p id="res"></p>
+<button onclick="next('q1')">Next</button>
+</div>
+
+<!-- flow -->
+<div id="q1" class="step">
+<p>3arfa meen a8la wahda?</p>
+<button onclick="next('img1')">Next</button>
+</div>
+
+<div id="img1" class="step">
+<img src="https://i.ibb.co/zVBg37SD/IMG-5229.jpg">
+<button onclick="next('q2')">Next</button>
+</div>
+
+<div id="q2" class="step">
+<p>3arfa ana b7b meen?</p>
+<button onclick="next('img2')">Next</button>
+</div>
+
+<div id="img2" class="step">
+<img src="https://i.ibb.co/GqvMbhX/IMG-5231.jpg">
+<button onclick="next('q3')">Next</button>
+</div>
+
+<div id="q3" class="step">
+<p>3arfa meen a8la haga?</p>
+<button onclick="next('img3')">Next</button>
+</div>
+
+<div id="img3" class="step">
+<img src="https://i.ibb.co/k2m7gVYH/IMG-5230.jpg">
+<button onclick="next('final')">Next</button>
+</div>
+
+<!-- final -->
+<div id="final" class="step">
+<p>bt7beny?</p>
+<button onclick="endYes()">Yes</button>
+<button onclick="wrong()">No</button>
+</div>
+
+</div>
+
+<script>
+
+function next(id){
+document.querySelectorAll(".step").forEach(s=>s.classList.remove("active"));
+document.getElementById(id).classList.add("active");
+}
+
+function hearts(n=50){
+for(let i=0;i<n;i++){
+let h=document.createElement("div");
+h.className="heart";
+h.innerHTML="💖";
+h.style.left=Math.random()*100+"vw";
+h.style.top="100%";
+document.body.appendChild(h);
+setTimeout(()=>h.remove(),2500);
+}
+}
+
+function xs(n=50){
+for(let i=0;i<n;i++){
+let x=document.createElement("div");
+x.className="x";
+x.innerHTML="❌";
+x.style.left=Math.random()*100+"vw";
+x.style.top=Math.random()*100+"vh";
+document.body.appendChild(x);
+setTimeout(()=>x.remove(),2500);
+}
+}
+
+/* السؤال الأول */
+function s1_yes(){
+xs(); // غلط
+}
+
+function s1_no(){
+hearts();
+next("s2"); // صح
+}
+
+/* السؤال التاني */
+function s2_yes(){
+hearts();
+next("song"); // صح
+}
+
+function s2_no(){
+xs(); // غلط ويرجع نفس السؤال
+}
+
+/* song */
+function playSong(){
+let m=document.getElementById("music");
+m.currentTime=71;
+m.play();
+next("wheelStep");
+}
+
+/* wheel */
+let items=["Beach","Sushi","Cinema","Cook together","Hodny"];
+let angle=0;
+
+function spin(){
+let r=Math.floor(Math.random()*items.length);
+angle+=360*3+r*72;
+document.getElementById("wheel").style.transform="rotate("+angle+"deg)";
+setTimeout(()=>{
+document.getElementById("res").innerHTML+=items[r]+"<br>";
+},3000);
+}
+
+/* النهاية */
+function endYes(){
+hearts(80);
+alert("💖 THE END 💖");
+}
+
+function wrong(){
+xs();
+}
+
+function start(){
+document.getElementById("intro").style.display="none";
+}
+
+</script>
+
+</body>
+</html>
